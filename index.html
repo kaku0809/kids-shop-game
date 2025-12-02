@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Балалар Дүкені: Қосу және Ақша</title>
+    <title>Балалар Дүкені: 1, 2, 5 теңге</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- Общие Стили --- */
+        /* --- Стили остаются прежними, чтобы сохранить дизайн --- */
         body {
             font-family: 'Nunito', sans-serif;
             background-color: #f0f8ff; 
@@ -33,10 +33,8 @@
             letter-spacing: 1px;
             text-shadow: 2px 2px #1d3557;
         }
-
-        /* --- Витрина: Используем magazin_fon_2.png с детьми --- */
         .shop-display {
-            background-image: url('magazin_fon_2.png');
+            background-image: url('magazin_fon_2.png'); /* Используем ваш фон с детьми */
             background-size: cover;
             background-position: center bottom;
             height: 450px; 
@@ -45,8 +43,6 @@
             align-items: flex-start;
             position: relative;
         }
-
-        /* --- Цена и Товар --- */
         .price-tag {
             background-color: #fff; 
             border: 4px solid #e63946; 
@@ -75,8 +71,6 @@
         .total-price {
             color: #e63946;
         }
-
-        /* --- Область Управления --- */
         .controls-area {
             padding: 25px;
             background-color: #f1faee; 
@@ -86,8 +80,6 @@
             color: #1d3557; 
             margin-bottom: 20px;
         }
-
-        /* --- Область Выбора Монет --- */
         .selected-coins-display {
             background-color: #fff;
             border: 2px dashed #457b9d;
@@ -103,8 +95,6 @@
         .sum-label {
             font-size: 1.2em;
         }
-        
-        /* --- Кнопки-Монеты --- */
         .coin-buttons {
             display: flex;
             justify-content: center;
@@ -139,8 +129,6 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
-        /* --- Кнопки Управления --- */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -157,18 +145,16 @@
             transition: background-color 0.3s;
         }
         #pay_button {
-            background-color: #4CAF50; /* Зеленый для оплаты */
+            background-color: #4CAF50; 
             color: white;
         }
         #pay_button:hover { background-color: #45a049; }
 
         #reset_button {
-            background-color: #ff9800; /* Оранжевый для сброса */
+            background-color: #ff9800; 
             color: white;
         }
         #reset_button:hover { background-color: #fb8c00; }
-        
-        /* --- Обратная Связь --- */
         .feedback {
             font-size: 1.4em;
             font-weight: 900;
@@ -202,7 +188,7 @@
         <div class="shop-display">
             <div class="price-tag">
                 <div class="item-list" id="item_to_buy_list">
-                    </div>
+                </div>
                 <div class="total-price">
                     Бағасы: <span id="item_price_total">...</span> тг
                 </div>
@@ -238,29 +224,33 @@
     <audio id="error_sound" src="error.mp3" preload="auto"></audio>
 
     <script>
-        // --- ДАННЫЕ ИГРЫ ---
+        // --- ДАННЫЕ ИГРЫ: ОБНОВЛЕНЫ МОНЕТЫ И ЦЕНЫ ТОВАРОВ ---
         const MONETALAR = {
-            "moneta_5": { value: 5, imgUrl: "moneta_5.png" },
-            "moneta_10": { value: 10, imgUrl: "moneta_10.png" },
-            "moneta_20": { value: 20, imgUrl: "moneta_20.png" }
+            // НОВЫЕ МОНЕТЫ: 1, 2, 5 тенге
+            "moneta_1": { value: 1, imgUrl: "moneta_1.png" }, // Убедитесь, что файл moneta_1.png загружен
+            "moneta_2": { value: 2, imgUrl: "moneta_2.png" }, // Убедитесь, что файл moneta_2.png загружен
+            "moneta_5": { value: 5, imgUrl: "moneta_5.png" }  // Используйте moneta_5.png
         };
 
         const TAUARLAR = [
-            { name: "ҚЫЗЫЛ ДОП", price: 10, icon: "🏀", group: 10 }, 
-            { name: "КӨК МАШИНА", price: 10, icon: "🚗", group: 10 }, 
-            { name: "ҚОҢЫР АЮ", price: 20, icon: "🐻", group: 20 },
-            { name: "ЖАСЫЛ КӘМПИТ", price: 5, icon: "🍬", group: 5 },
-            { name: "САРЫ БАНАН", price: 5, icon: "🍌", group: 5 }
+            // НОВЫЕ, БОЛЕЕ НИЗКИЕ ЦЕНЫ: Максимальная цена покупки 10 тенге.
+            { name: "КӘМПИТ", price: 3, icon: "🍬" }, 
+            { name: "САРЫ БАНАН", price: 4, icon: "🍌" }, 
+            { name: "ШАРЫ", price: 5, icon: "🎈" },
+            { name: "ҚАРАНДАШ", price: 6, icon: "✏️" },
+            { name: "КІШКЕНЕ ДОП", price: 7, icon: "🥎" }, 
+            { name: "ОЙЫНШЫҚ МАШИНА", price: 8, icon: "🚗" },
+            { name: "КІТАПША", price: 9, icon: "📖" }
         ];
         
-        // --- ПЕРЕМЕННЫЕ СОСТОЯНИЯ ---
+        // --- ПЕРЕМЕННЫЕ СОСТОЯНИЯ (Не менялись) ---
         let bonusTokens = 0;
         let level = 0;
         let currentItems = [];
         let requiredPrice = 0;
         let currentSum = 0; 
 
-        // --- ЭЛЕМЕНТЫ DOM и ЗВУКИ ---
+        // --- ЭЛЕМЕНТЫ DOM и ЗВУКИ (Не менялись) ---
         const tokensDisplay = document.getElementById('tokens');
         const levelDisplay = document.getElementById('level');
         const itemToListDisplay = document.getElementById('item_to_buy_list');
@@ -273,7 +263,7 @@
         const successSound = document.getElementById('success_sound');
         const errorSound = document.getElementById('error_sound');
 
-        // --- ЛОГИКА ИГРЫ ---
+        // --- ЛОГИКА ИГРЫ (Обновлена функция generateTask) ---
 
         function playSound(audioElement) {
             audioElement.currentTime = 0;
@@ -281,15 +271,11 @@
         }
 
         function startGame() {
-            // Создаем кнопки-монетки
             for (const [key, data] of Object.entries(MONETALAR)) {
                 const button = document.createElement('button');
                 button.classList.add('moneta-btn');
-                button.id = `moneta_${data.value}`; // Добавляем ID для удобства управления
-                
-                // Обработчик события: при нажатии добавляем стоимость монеты к общей сумме
+                button.id = `moneta_${data.value}`; 
                 button.onclick = () => addCoin(data.value); 
-                
                 button.innerHTML = `<img src="${data.imgUrl}" class="coin-image" alt="${key}">`;
                 buttonsContainer.appendChild(button);
             }
@@ -299,18 +285,9 @@
         function addCoin(value) {
             currentSum += value;
             currentSumDisplay.textContent = currentSum;
-            
-            // Если сумма уже достаточна, можно уведомить пользователя, что можно платить
             if (currentSum >= requiredPrice) {
                  payButton.style.backgroundColor = '#00C853'; 
             }
-        }
-
-        // Вспомогательная функция для включения/выключения кнопок монеток
-        function enableButtons(isEnabled) {
-            document.querySelectorAll('.moneta-btn').forEach(button => {
-                button.disabled = !isEnabled;
-            });
         }
         
         function resetSum() {
@@ -319,16 +296,15 @@
             feedbackDisplay.textContent = 'Ақша таңдауды бастаңыз.';
             feedbackDisplay.className = 'feedback';
             
-            // FIX: ВОССТАНАВЛИВАЕМ КНОПКИ
-            enableButtons(true); // Включаем кнопки монеток
-            document.getElementById('pay_button').disabled = false; // Включаем "Оплатить"
-            document.getElementById('reset_button').disabled = false; // Включаем "Сброс"
+            enableButtons(true); 
+            document.getElementById('pay_button').disabled = false; 
+            document.getElementById('reset_button').disabled = false; 
             
             payButton.style.backgroundColor = '#4CAF50';
         }
 
         function generateTask() {
-            // Уровень 1-3: Простая покупка (5, 10, 20 тг)
+            // Уровень 1-3: Простая покупка (один товар)
             if (level <= 3) {
                 const item = TAUARLAR[Math.floor(Math.random() * TAUARLAR.length)];
                 return [item];
@@ -339,16 +315,16 @@
                 do {
                     item1 = TAUARLAR[Math.floor(Math.random() * TAUARLAR.length)];
                     item2 = TAUARLAR[Math.floor(Math.random() * TAUARLAR.length)];
-                } while (item1.price + item2.price > 30 || item1.price + item2.price < 15); 
+                    // Гарантируем, что цена будет не меньше 5 и не больше 10
+                } while (item1.price + item2.price > 10 || item1.price + item2.price < 5); 
 
                 return [item1, item2];
             }
         }
         
         function nextItem() {
-            // Сброс и подготовка к новому уровню
             nextButton.disabled = true;
-            resetSum(); // Сбрасываем выбранную сумму и активируем кнопки!
+            resetSum();
             
             level++;
             levelDisplay.textContent = `✨ ${level}-ші ДЕҢГЕЙ: Сатып алу`;
@@ -384,18 +360,21 @@
                 itemPriceTotalDisplay.textContent = `${priceString} = ${requiredPrice}`;
             }
 
-            // Условие окончания игры
             if (level > 10) {
                 endGame();
             }
         }
         
-        // --- ГЛАВНАЯ ПРОВЕРКА ---
+        function enableButtons(isEnabled) {
+            document.querySelectorAll('.moneta-btn').forEach(button => {
+                button.disabled = !isEnabled;
+            });
+        }
+
         function checkAnswer() {
             let feedbackMessage = "";
             let isCorrect = false;
             
-            // 1. Проверка на точную сумму
             if (currentSum === requiredPrice) {
                 feedbackMessage = `✅ КЕРЕМЕТ! ${currentSum} теңге – дәл қажетті сома! +1 Таңба!`;
                 bonusTokens++;
@@ -403,18 +382,15 @@
                 feedbackDisplay.className = 'feedback correct';
                 playSound(successSound);
             } 
-            // 2. Проверка на недостаток суммы
             else if (currentSum < requiredPrice) {
                 feedbackMessage = `❌ ЖОҚ! ${currentSum} теңге — жеткіліксіз. Қажет ${requiredPrice} тг. Тағы тиындар қосыңыз!`;
                 feedbackDisplay.className = 'feedback error';
                 playSound(errorSound);
             } 
-            // 3. Проверка на слишком большую сумму (сдача)
             else { 
                 const change = currentSum - requiredPrice;
                 feedbackMessage = `⚠️ Ой! ${currentSum} теңге — тым көп. Қайтарым (сдача) ${change} тг. Тапсырма орындалды!`;
                 
-                // Засчитываем как успех и разрешаем переход
                 bonusTokens++;
                 isCorrect = true;
                 feedbackDisplay.className = 'feedback correct'; 
@@ -424,14 +400,12 @@
             tokensDisplay.textContent = bonusTokens;
 
             if (isCorrect) {
-                // Блокируем монеты и оплату до перехода к следующему заданию
                 document.querySelectorAll('.moneta-btn, #pay_button, #reset_button').forEach(btn => btn.disabled = true);
                 nextButton.disabled = false;
             }
         }
         
         function endGame() {
-            // Код конца игры
             levelDisplay.textContent = "🎉 ОЙЫН АЯҚТАЛДЫ!";
             itemToListDisplay.innerHTML = `<span class="item-icon">🏆</span>`;
             itemPriceTotalDisplay.textContent = `Сен барлық деңгейден өттің!`;
